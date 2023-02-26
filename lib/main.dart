@@ -71,20 +71,24 @@ class _MainWidgetState extends State<MainWidget> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    _orginaltext == null ? "" : _orginaltext!.trim(),
-                    style: const TextStyle(fontSize: 20),
-                    locale: const Locale('en'),
+                  Expanded(
+                    child: Text(
+                      _orginaltext == null ? "" : _orginaltext!.trim(),
+                      style: const TextStyle(fontSize: 20),
+                      locale: const Locale('en'),
+                    ),
                   ),
                   IconButton(
                       onPressed: () async {
-                        final SimplyTranslator gt =
-                            SimplyTranslator(EngineType.google);
-                        String x = gt.getTTSUrlSimply(_orginaltext!, "en");
-                        final player = AudioPlayer();
-                        await player.play(UrlSource(x));
+                        try {
+                          final SimplyTranslator gt =
+                              SimplyTranslator(EngineType.google);
+                          String x = gt.getTTSUrlSimply(_orginaltext!, "en");
+                          final player = AudioPlayer();
+                          await player.play(UrlSource(x));
+                        } catch (_) {}
                       },
                       icon: const Icon(Icons.speaker_sharp)),
                 ],
@@ -143,19 +147,15 @@ class _MainWidgetState extends State<MainWidget> {
                       file!,
                       pageLayoutMode: PdfPageLayoutMode.single,
                       onDocumentLoaded: (details) {
-                        try {
-                          setState(() {
-                            pageCount = details.document.pages.count;
-                            currentPage = 1;
-                          });
-                        } catch (_) {}
+                        setState(() {
+                          pageCount = details.document.pages.count;
+                          currentPage = 1;
+                        });
                       },
                       onPageChanged: (details) {
-                        try {
-                          setState(() {
-                            currentPage = details.newPageNumber;
-                          });
-                        } catch (_) {}
+                        setState(() {
+                          currentPage = details.newPageNumber;
+                        });
                       },
                       onTextSelectionChanged: (details) async {
                         if (details.selectedText != null) {
@@ -164,7 +164,6 @@ class _MainWidgetState extends State<MainWidget> {
                               _orginaltext = details.selectedText!
                                   .replaceAll(RegExp(r'\n'), ' ')
                                   .trim();
-                              print(_orginaltext);
                             });
                             final translator = GoogleTranslator();
                             var t = await translator.translate(_orginaltext!,
