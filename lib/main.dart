@@ -123,15 +123,6 @@ class _MainWidgetState extends State<MainWidget> {
                             currentPage = details.newPageNumber;
                           });
                         } catch (_) {}
-                        // try {
-                        //   final snackBar = SnackBar(
-                        //     content:
-                        //         Text("${details.newPageNumber} of $pageCount"),
-                        //     backgroundColor: (Colors.black12),
-                        //     duration: const Duration(milliseconds: 500),
-                        //   );
-                        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        // } catch (_) {}
                       },
                       onTextSelectionChanged: (details) async {
                         if (details.selectedText != null) {
