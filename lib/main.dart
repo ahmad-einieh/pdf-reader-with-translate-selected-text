@@ -17,12 +17,8 @@ class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MainWidget(),
-    );
-  }
+  Widget build(BuildContext context) =>
+      const MaterialApp(debugShowCheckedModeBanner: false, home: MainWidget());
 }
 
 class MainWidget extends StatefulWidget {
@@ -41,6 +37,7 @@ class _MainWidgetState extends State<MainWidget> {
   bool isShow = true;
   File? file;
   bool isSingle = true;
+  String? fileName;
 
   readText(text) async {
     final encodedParams = {
@@ -86,6 +83,7 @@ class _MainWidgetState extends State<MainWidget> {
                 children: [
                   !isShow
                       ? IconButton(
+                          tooltip: "close $fileName",
                           onPressed: () {
                             setState(() {
                               isShow = true;
@@ -188,9 +186,11 @@ class _MainWidgetState extends State<MainWidget> {
                     onPressed: () async {
                       FilePickerResult? result =
                           await FilePicker.platform.pickFiles();
+
                       if (result != null) {
                         setState(() {
                           file = File(result.files.single.path!);
+                          fileName = result.files.single.name;
                           isShow = false;
                         });
                       }
