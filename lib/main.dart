@@ -7,6 +7,10 @@ import 'package:simplytranslate/simplytranslate.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:translator/translator.dart';
 
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
+
 void main() {
   runApp(const MainApp());
 }
@@ -38,6 +42,39 @@ class _MainWidgetState extends State<MainWidget> {
   int? currentPage;
   bool isShow = true;
   File? file;
+
+  readText(text) async {
+    final encodedParams = {
+      "src": "$text",
+      "hl": "en-us",
+      "r": "2",
+      "c": "mp3",
+      "f": "16khz_16bit_stereo"
+    };
+
+    final uri = Uri.parse(
+        'https://voicerss-text-to-speech.p.rapidapi.com/?key=63cb6bc6ae5148339cf6858442f5bed5');
+    final headers = {
+      'content-type': 'application/x-www-form-urlencoded',
+      'X-RapidAPI-Key': 'e115eb8e19msh1807594767d84d6p199db8jsn7fd5aa515e87',
+      'X-RapidAPI-Host': 'voicerss-text-to-speech.p.rapidapi.com'
+    };
+    final request = http.Request('POST', uri)..headers.addAll(headers);
+    request.bodyFields = encodedParams;
+
+    final http.StreamedResponse response = await http.Client().send(request);
+    final http.Response responseData = await http.Response.fromStream(response);
+    final result = responseData.bodyBytes;
+    File inFile = File('test.mp3');
+    var x = await inFile.writeAsBytes(result);
+
+    print(x.absolute.path);
+    print(x.path);
+    final player = AudioPlayer();
+    // await player.setSourceUrl(speechFile);
+    await player.play(DeviceFileSource(x.path));
+    inFile.delete();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,15 +119,18 @@ class _MainWidgetState extends State<MainWidget> {
                   ),
                   IconButton(
                       onPressed: () async {
-                        try {
-                          final SimplyTranslator gt =
-                              SimplyTranslator(EngineType.google);
-                          String x = gt.getTTSUrlSimply(_orginaltext!, "en");
-                          final player = AudioPlayer();
-                          await player.play(UrlSource(x));
-                        } catch (_) {}
+                        await readText(_orginaltext);
+
+                        // try {
+                        //   final SimplyTranslator gt =
+                        //       SimplyTranslator(EngineType.google);
+                        //   String speechFile =
+                        //       gt.getTTSUrlSimply(_orginaltext!, "en");
+                        //   final player = AudioPlayer();
+                        //   await player.play(UrlSource(speechFile));
+                        // } catch (_) {}
                       },
-                      icon: const Icon(Icons.speaker_sharp)),
+                      icon: const Icon(Icons.volume_up)),
                 ],
               ),
             ),
@@ -111,8 +151,17 @@ class _MainWidgetState extends State<MainWidget> {
                           var t = await translator.translate(value,
                               from: 'en', to: 'ar');
                           setState(() {
-                            _text = t.text;
-                            _text = _text!.replaceAll(RegExp(r'\n+'), '');
+                            _text =
+                                t.text.replaceAll(RegExp(r'\n'), ' ').trim();
+                          });
+                          final gt = SimplyTranslator(EngineType.google);
+                          String textResult =
+                              await gt.trSimply(value, "en", 'ar');
+                          setState(() {
+                            _orginaltext = value;
+                            _anothertext = textResult
+                                .replaceAll(RegExp(r'\n'), ' ')
+                                .trim();
                           });
                         }
                       },
