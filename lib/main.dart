@@ -7,8 +7,6 @@ import 'package:simplytranslate/simplytranslate.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:translator/translator.dart';
 
-import 'dart:io';
-
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -42,12 +40,13 @@ class _MainWidgetState extends State<MainWidget> {
   int? currentPage;
   bool isShow = true;
   File? file;
+  bool isSingle = true;
 
   readText(text) async {
     final encodedParams = {
       "src": "$text",
       "hl": "en-us",
-      "r": "2",
+      "r": "1",
       "c": "mp3",
       "f": "16khz_16bit_stereo"
     };
@@ -67,11 +66,9 @@ class _MainWidgetState extends State<MainWidget> {
     final result = responseData.bodyBytes;
     File inFile = File('test.mp3');
     var x = await inFile.writeAsBytes(result);
-
-    print(x.absolute.path);
-    print(x.path);
+    // print(x.absolute.path);
+    // print(x.path);
     final player = AudioPlayer();
-    // await player.setSourceUrl(speechFile);
     await player.play(DeviceFileSource(x.path));
     inFile.delete();
   }
@@ -108,7 +105,6 @@ class _MainWidgetState extends State<MainWidget> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Text(
@@ -167,12 +163,23 @@ class _MainWidgetState extends State<MainWidget> {
                       },
                     ),
                   ),
-                  currentPage == null || pageCount == null
-                      ? const SizedBox()
-                      : SizedBox(
-                          width: 66,
-                          child: Text("$currentPage of $pageCount"),
-                        ),
+                  Row(
+                    children: [
+                      currentPage == null || pageCount == null
+                          ? const SizedBox()
+                          : SizedBox(
+                              width: 66,
+                              child: Text("$currentPage of $pageCount"),
+                            ),
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isSingle = !isSingle;
+                            });
+                          },
+                          icon: const Icon(Icons.change_circle))
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -194,7 +201,9 @@ class _MainWidgetState extends State<MainWidget> {
                 ? Expanded(
                     child: SfPdfViewer.file(
                       file!,
-                      pageLayoutMode: PdfPageLayoutMode.single,
+                      pageLayoutMode: isSingle
+                          ? PdfPageLayoutMode.single
+                          : PdfPageLayoutMode.continuous,
                       onDocumentLoaded: (details) {
                         setState(() {
                           pageCount = details.document.pages.count;
