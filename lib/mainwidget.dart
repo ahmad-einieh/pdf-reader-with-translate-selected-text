@@ -31,9 +31,9 @@ class _MainWidgetState extends State<MainWidget> {
     final encodedParams = {
       "src": "$text",
       "hl": "en-us",
-      "r": "1",
+      "r": "0",
       "c": "mp3",
-      "f": "16khz_16bit_stereo"
+      "f": "16khz_16bit_mono"
     };
 
     final uri = Uri.parse(
