@@ -122,21 +122,6 @@ class _MainWidgetState extends State<MainWidget> {
               _anothertext == null ? "" : _anothertext!.trim(),
               style: const TextStyle(fontSize: 32),
             ),
-            isShow
-                ? ElevatedButton(
-                    onPressed: () async {
-                      FilePickerResult? result =
-                          await FilePicker.platform.pickFiles();
-                      if (result != null) {
-                        setState(() {
-                          file = File(result.files.single.path!);
-                          fileName = result.files.single.name;
-                          isShow = false;
-                        });
-                      }
-                    },
-                    child: const Text("select file"))
-                : Container(),
             !isShow
                 ? Expanded(
                     child: SfPdfViewer.file(
@@ -184,7 +169,24 @@ class _MainWidgetState extends State<MainWidget> {
                       },
                     ),
                   )
-                : const SizedBox(),
+                : ElevatedButton(
+                    onPressed: () async {
+                      FilePickerResult? result = await FilePicker.platform
+                          .pickFiles(
+                              dialogTitle: "open PDF files",
+                              allowedExtensions: ['pdf'],
+                              type: FileType.custom,
+                              allowMultiple: true,
+                              lockParentWindow: true);
+                      if (result != null) {
+                        setState(() {
+                          file = File(result.files.single.path!);
+                          fileName = result.files.single.name;
+                          isShow = false;
+                        });
+                      }
+                    },
+                    child: const Text("select PDF files")),
             Container(
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.01),
