@@ -33,9 +33,8 @@ class _MainWidgetState extends State<MainWidget> {
       "hl": "en-us",
       "r": "0",
       "c": "mp3",
-      "f": "16khz_16bit_mono"
+      "f": "16khz_16bit_stereo"
     };
-
     final uri = Uri.parse(
         'https://voicerss-text-to-speech.p.rapidapi.com/?key=63cb6bc6ae5148339cf6858442f5bed5');
     final headers = {
@@ -45,7 +44,6 @@ class _MainWidgetState extends State<MainWidget> {
     };
     final request = http.Request('POST', uri)..headers.addAll(headers);
     request.bodyFields = encodedParams;
-
     final http.StreamedResponse response = await http.Client().send(request);
     final http.Response responseData = await http.Response.fromStream(response);
     final result = responseData.bodyBytes;
@@ -62,18 +60,39 @@ class _MainWidgetState extends State<MainWidget> {
       body: Center(
         child: Column(
           children: [
-            SelectableText(
-              _text == null ? "" : _text!.trim(),
-              style: const TextStyle(fontSize: 20),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: TextField(
+                      onSubmitted: (value) async {
+                        if (value.isNotEmpty) {
+                          final translator = GoogleTranslator();
+                          var t = await translator.translate(value,
+                              from: 'en', to: 'ar');
+                          setState(() {
+                            _orginaltext = value;
+                            _text =
+                                t.text.replaceAll(RegExp(r'\n'), ' ').trim();
+                          });
+                          final gt = SimplyTranslator(EngineType.google);
+                          String textResult =
+                              await gt.trSimply(value, "en", 'ar');
+                          setState(() {
+                            _anothertext = textResult
+                                .replaceAll(RegExp(r'\n'), ' ')
+                                .trim();
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: SelectableText(
                       _orginaltext == null ? "" : _orginaltext!.trim(),
-                      style: const TextStyle(fontSize: 20),
                     ),
                   ),
                   IconButton(
@@ -95,37 +114,18 @@ class _MainWidgetState extends State<MainWidget> {
               ),
             ),
             SelectableText(
-              _anothertext == null ? "" : _anothertext!.trim(),
-              style: const TextStyle(fontSize: 20),
+              _text == null ? "" : _text!.trim(),
+              style: const TextStyle(fontSize: 32),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TextField(
-                onSubmitted: (value) async {
-                  if (value.isNotEmpty) {
-                    final translator = GoogleTranslator();
-                    var t =
-                        await translator.translate(value, from: 'en', to: 'ar');
-                    setState(() {
-                      _orginaltext = value;
-                      _text = t.text.replaceAll(RegExp(r'\n'), ' ').trim();
-                    });
-                    final gt = SimplyTranslator(EngineType.google);
-                    String textResult = await gt.trSimply(value, "en", 'ar');
-                    setState(() {
-                      _anothertext =
-                          textResult.replaceAll(RegExp(r'\n'), ' ').trim();
-                    });
-                  }
-                },
-              ),
+            SelectableText(
+              _anothertext == null ? "" : _anothertext!.trim(),
+              style: const TextStyle(fontSize: 32),
             ),
             isShow
                 ? ElevatedButton(
                     onPressed: () async {
                       FilePickerResult? result =
                           await FilePicker.platform.pickFiles();
-
                       if (result != null) {
                         setState(() {
                           file = File(result.files.single.path!);
@@ -186,7 +186,7 @@ class _MainWidgetState extends State<MainWidget> {
                 : const SizedBox(),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              height: 22,
+              height: 32,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -211,11 +211,18 @@ class _MainWidgetState extends State<MainWidget> {
                       : const SizedBox(),
                   currentPage == null || pageCount == null
                       ? const SizedBox()
-                      : Text("$currentPage of $pageCount"),
-                  fileName == null ? const SizedBox() : Text(fileName!),
+                      : Text(
+                          "$currentPage of $pageCount",
+                          style: const TextStyle(fontSize: 24),
+                        ),
+                  fileName == null
+                      ? const SizedBox()
+                      : Text(
+                          fileName!,
+                          style: const TextStyle(fontSize: 16),
+                        ),
                   IconButton(
                       padding: const EdgeInsets.symmetric(vertical: 0),
-                      iconSize: 22,
                       onPressed: () {
                         setState(() {
                           isSingle = !isSingle;
