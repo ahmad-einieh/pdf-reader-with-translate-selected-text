@@ -47,7 +47,7 @@ class _MainWidgetState extends State<MainWidget> {
     final http.StreamedResponse response = await http.Client().send(request);
     final http.Response responseData = await http.Response.fromStream(response);
     final result = responseData.bodyBytes;
-    File inFile = File('test.mp3');
+    File inFile = File('audio.mp3');
     var x = await inFile.writeAsBytes(result);
     final player = AudioPlayer();
     await player.play(DeviceFileSource(x.path));
@@ -61,7 +61,8 @@ class _MainWidgetState extends State<MainWidget> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.005),
               child: Row(
                 children: [
                   SizedBox(
@@ -89,7 +90,7 @@ class _MainWidgetState extends State<MainWidget> {
                       },
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                   Expanded(
                     child: SelectableText(
                       _orginaltext == null ? "" : _orginaltext!.trim(),
@@ -185,14 +186,15 @@ class _MainWidgetState extends State<MainWidget> {
                   )
                 : const SizedBox(),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.01),
               height: 32,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   !isShow
                       ? IconButton(
-                          padding: const EdgeInsets.symmetric(vertical: 0),
+                          padding: EdgeInsets.zero,
                           tooltip: "close $fileName",
                           onPressed: () {
                             setState(() {
@@ -222,7 +224,7 @@ class _MainWidgetState extends State<MainWidget> {
                           style: const TextStyle(fontSize: 16),
                         ),
                   IconButton(
-                      padding: const EdgeInsets.symmetric(vertical: 0),
+                      padding: EdgeInsets.zero,
                       onPressed: () {
                         setState(() {
                           isSingle = !isSingle;
