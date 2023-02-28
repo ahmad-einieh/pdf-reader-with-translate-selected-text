@@ -62,44 +62,25 @@ class _MainWidgetState extends State<MainWidget> {
       body: Center(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  !isShow
-                      ? IconButton(
-                          tooltip: "close $fileName",
-                          onPressed: () {
-                            setState(() {
-                              isShow = true;
-                              file = null;
-                            });
-                          },
-                          icon: const Icon(Icons.close))
-                      : const SizedBox(),
-                  Text(
-                    _text == null ? "" : _text!.trim(),
-                    style: const TextStyle(fontSize: 20),
-                    locale: const Locale('ar'),
-                  ),
-                ],
-              ),
+            SelectableText(
+              _text == null ? "" : _text!.trim(),
+              style: const TextStyle(fontSize: 20),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
+                    child: SelectableText(
                       _orginaltext == null ? "" : _orginaltext!.trim(),
                       style: const TextStyle(fontSize: 20),
-                      locale: const Locale('en'),
                     ),
                   ),
                   IconButton(
                       onPressed: () async {
-                        await readText(_orginaltext);
+                        try {
+                          await readText(_orginaltext);
+                        } catch (_) {}
                         // try {
                         //   final SimplyTranslator gt =
                         //       SimplyTranslator(EngineType.google);
@@ -113,57 +94,30 @@ class _MainWidgetState extends State<MainWidget> {
                 ],
               ),
             ),
-            Text(
+            SelectableText(
               _anothertext == null ? "" : _anothertext!.trim(),
               style: const TextStyle(fontSize: 20),
-              locale: const Locale('ar'),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) async {
-                        if (value.isNotEmpty) {
-                          final translator = GoogleTranslator();
-                          var t = await translator.translate(value,
-                              from: 'en', to: 'ar');
-                          setState(() {
-                            _text =
-                                t.text.replaceAll(RegExp(r'\n'), ' ').trim();
-                          });
-                          final gt = SimplyTranslator(EngineType.google);
-                          String textResult =
-                              await gt.trSimply(value, "en", 'ar');
-                          setState(() {
-                            _orginaltext = value;
-                            _anothertext = textResult
-                                .replaceAll(RegExp(r'\n'), ' ')
-                                .trim();
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      currentPage == null || pageCount == null
-                          ? const SizedBox()
-                          : SizedBox(
-                              width: 66,
-                              child: Text("$currentPage of $pageCount"),
-                            ),
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isSingle = !isSingle;
-                            });
-                          },
-                          icon: const Icon(Icons.change_circle))
-                    ],
-                  ),
-                ],
+              child: TextField(
+                onSubmitted: (value) async {
+                  if (value.isNotEmpty) {
+                    final translator = GoogleTranslator();
+                    var t =
+                        await translator.translate(value, from: 'en', to: 'ar');
+                    setState(() {
+                      _orginaltext = value;
+                      _text = t.text.replaceAll(RegExp(r'\n'), ' ').trim();
+                    });
+                    final gt = SimplyTranslator(EngineType.google);
+                    String textResult = await gt.trSimply(value, "en", 'ar');
+                    setState(() {
+                      _anothertext =
+                          textResult.replaceAll(RegExp(r'\n'), ' ').trim();
+                    });
+                  }
+                },
               ),
             ),
             isShow
@@ -230,6 +184,47 @@ class _MainWidgetState extends State<MainWidget> {
                     ),
                   )
                 : const SizedBox(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 22,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  !isShow
+                      ? IconButton(
+                          padding: const EdgeInsets.symmetric(vertical: 0),
+                          tooltip: "close $fileName",
+                          onPressed: () {
+                            setState(() {
+                              isShow = true;
+                              file = null;
+                              fileName = null;
+                              _text = null;
+                              _orginaltext = null;
+                              _anothertext = null;
+                              pageCount = null;
+                              currentPage = null;
+                              isSingle = true;
+                            });
+                          },
+                          icon: const Icon(Icons.close))
+                      : const SizedBox(),
+                  currentPage == null || pageCount == null
+                      ? const SizedBox()
+                      : Text("$currentPage of $pageCount"),
+                  fileName == null ? const SizedBox() : Text(fileName!),
+                  IconButton(
+                      padding: const EdgeInsets.symmetric(vertical: 0),
+                      iconSize: 22,
+                      onPressed: () {
+                        setState(() {
+                          isSingle = !isSingle;
+                        });
+                      },
+                      icon: const Icon(Icons.change_circle))
+                ],
+              ),
+            )
           ],
         ),
       ),
