@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
+import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/material.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -26,6 +28,10 @@ class _MainWidgetState extends State<MainWidget> {
   File? file;
   bool isSingle = true;
   String? fileName;
+
+  List<XFile> _list = [];
+
+  bool _dragging = false;
 
   readText(text) async {
     final encodedParams = {
@@ -193,6 +199,36 @@ class _MainWidgetState extends State<MainWidget> {
                               }
                             },
                             child: const Text("select PDF files")),
+                        DropTarget(
+                          onDragDone: (detail) {
+                            setState(() {
+                              _list.addAll(detail.files);
+                            });
+                            for (var ss in _list) {
+                              print(ss.path);
+                            }
+                          },
+                          onDragEntered: (detail) {
+                            setState(() {
+                              _dragging = true;
+                            });
+                          },
+                          onDragExited: (detail) {
+                            setState(() {
+                              _dragging = false;
+                            });
+                          },
+                          child: Container(
+                            height: 200,
+                            width: 200,
+                            color: _dragging
+                                ? Colors.blue.withOpacity(0.4)
+                                : Colors.black26,
+                            child: _list.isEmpty
+                                ? const Center(child: Text("Drop here"))
+                                : Text(_list.join("\n")),
+                          ),
+                        )
                       ],
                     ),
                   ),

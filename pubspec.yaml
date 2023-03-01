@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   audioplayers: ^3.0.1
+  cross_file: ^0.3.3+4
+  desktop_drop: ^0.4.1
   file_picker: ^5.2.5
   flutter:
     sdk: flutter
