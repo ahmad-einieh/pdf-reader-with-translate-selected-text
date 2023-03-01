@@ -116,11 +116,13 @@ class _MainWidgetState extends State<MainWidget> {
             ),
             SelectableText(
               _text == null ? "" : _text!.trim(),
-              style: const TextStyle(fontSize: 32),
+              style: const TextStyle(fontSize: 24),
+              textDirection: TextDirection.rtl,
             ),
             SelectableText(
               _anothertext == null ? "" : _anothertext!.trim(),
-              style: const TextStyle(fontSize: 32),
+              style: const TextStyle(fontSize: 24),
+              textDirection: TextDirection.rtl,
             ),
             !isShow
                 ? Expanded(
@@ -169,71 +171,82 @@ class _MainWidgetState extends State<MainWidget> {
                       },
                     ),
                   )
-                : ElevatedButton(
-                    onPressed: () async {
-                      FilePickerResult? result = await FilePicker.platform
-                          .pickFiles(
-                              dialogTitle: "open PDF files",
-                              allowedExtensions: ['pdf'],
-                              type: FileType.custom,
-                              allowMultiple: true,
-                              lockParentWindow: true);
-                      if (result != null) {
-                        setState(() {
-                          file = File(result.files.single.path!);
-                          fileName = result.files.single.name;
-                          isShow = false;
-                        });
-                      }
-                    },
-                    child: const Text("select PDF files")),
-            Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.01),
-              height: 32,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  !isShow
-                      ? IconButton(
-                          padding: EdgeInsets.zero,
-                          tooltip: "close $fileName",
-                          onPressed: () {
-                            setState(() {
-                              isShow = true;
-                              file = null;
-                              fileName = null;
-                              _text = null;
-                              _orginaltext = null;
-                              _anothertext = null;
-                              pageCount = null;
-                              currentPage = null;
-                              isSingle = true;
-                            });
-                          },
-                          icon: const Icon(Icons.close))
-                      : const SizedBox(),
-                  currentPage == null || pageCount == null
-                      ? const SizedBox()
-                      : Text(
-                          "$currentPage of $pageCount",
-                          style: const TextStyle(fontSize: 24),
-                        ),
-                  fileName == null
-                      ? const SizedBox()
-                      : Text(
-                          fileName!,
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                  IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        setState(() {
-                          isSingle = !isSingle;
-                        });
-                      },
-                      icon: const Icon(Icons.change_circle))
-                ],
+                : Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                            onPressed: () async {
+                              FilePickerResult? result =
+                                  await FilePicker.platform.pickFiles(
+                                      dialogTitle: "open PDF files",
+                                      allowedExtensions: ['pdf'],
+                                      type: FileType.custom,
+                                      allowMultiple: true,
+                                      lockParentWindow: true);
+                              if (result != null) {
+                                setState(() {
+                                  file = File(result.files.single.path!);
+                                  fileName = result.files.single.name;
+                                  isShow = false;
+                                });
+                              }
+                            },
+                            child: const Text("select PDF files")),
+                      ],
+                    ),
+                  ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                color: Colors.blueGrey,
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.01),
+                height: 32,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    !isShow
+                        ? IconButton(
+                            padding: EdgeInsets.zero,
+                            tooltip: "close $fileName",
+                            onPressed: () {
+                              setState(() {
+                                isShow = true;
+                                file = null;
+                                fileName = null;
+                                _text = null;
+                                _orginaltext = null;
+                                _anothertext = null;
+                                pageCount = null;
+                                currentPage = null;
+                                isSingle = true;
+                              });
+                            },
+                            icon: const Icon(Icons.close))
+                        : const SizedBox(),
+                    currentPage == null || pageCount == null
+                        ? const SizedBox()
+                        : Text(
+                            "$currentPage of $pageCount",
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                    fileName == null
+                        ? const SizedBox()
+                        : Text(
+                            fileName!,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                    IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          setState(() {
+                            isSingle = !isSingle;
+                          });
+                        },
+                        icon: const Icon(Icons.change_circle))
+                  ],
+                ),
               ),
             )
           ],
