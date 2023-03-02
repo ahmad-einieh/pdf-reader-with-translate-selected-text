@@ -29,7 +29,7 @@ class _MainWidgetState extends State<MainWidget> {
   bool isSingle = true;
   String? fileName;
 
-  List<XFile> _list = [];
+  final List<XFile> _list = [];
 
   bool _dragging = false;
 
