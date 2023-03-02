@@ -51,13 +51,21 @@ class _MainWidgetState extends State<MainWidget> {
     final request = http.Request('POST', uri)..headers.addAll(headers);
     request.bodyFields = encodedParams;
     final http.StreamedResponse response = await http.Client().send(request);
-    final http.Response responseData = await http.Response.fromStream(response);
-    final result = responseData.bodyBytes;
-    File inFile = File('audio.mp3');
-    var x = await inFile.writeAsBytes(result);
-    final player = AudioPlayer();
-    await player.play(DeviceFileSource(x.path));
-    inFile.delete();
+    if (response.statusCode == 200) {
+      final http.Response responseData =
+          await http.Response.fromStream(response);
+      if (responseData.statusCode == 200) {
+        File inFile = File('audio.mp3');
+        var x = await inFile.writeAsBytes(responseData.bodyBytes);
+        final player = AudioPlayer();
+        await player.play(DeviceFileSource(x.path));
+        inFile.delete();
+      } else {
+        debugPrint("${responseData.headers}");
+      }
+    } else {
+      debugPrint("${response.headers}");
+    }
   }
 
   @override
@@ -178,9 +186,42 @@ class _MainWidgetState extends State<MainWidget> {
                     ),
                   )
                 : Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: Stack(
+                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: DropTarget(
+                            onDragDone: (detail) {
+                              setState(() {
+                                _list.addAll(detail.files);
+                              });
+                              for (var ss in _list) {
+                                print(ss.path);
+                              }
+                            },
+                            onDragEntered: (detail) {
+                              setState(() {
+                                _dragging = true;
+                              });
+                            },
+                            onDragExited: (detail) {
+                              setState(() {
+                                _dragging = false;
+                              });
+                            },
+                            child: Container(
+                              height: double.infinity,
+                              width: double.infinity,
+                              color: _dragging
+                                  ? Colors.blue.withOpacity(0.4)
+                                  : Colors.black26,
+                              child: _list.isEmpty
+                                  ? const Center(child: Text("Drop here"))
+                                  : Text(_list.join("\n")),
+                            ),
+                          ),
+                        ),
                         ElevatedButton(
                             onPressed: () async {
                               FilePickerResult? result =
@@ -199,36 +240,6 @@ class _MainWidgetState extends State<MainWidget> {
                               }
                             },
                             child: const Text("select PDF files")),
-                        DropTarget(
-                          onDragDone: (detail) {
-                            setState(() {
-                              _list.addAll(detail.files);
-                            });
-                            for (var ss in _list) {
-                              print(ss.path);
-                            }
-                          },
-                          onDragEntered: (detail) {
-                            setState(() {
-                              _dragging = true;
-                            });
-                          },
-                          onDragExited: (detail) {
-                            setState(() {
-                              _dragging = false;
-                            });
-                          },
-                          child: Container(
-                            height: 200,
-                            width: 200,
-                            color: _dragging
-                                ? Colors.blue.withOpacity(0.4)
-                                : Colors.black26,
-                            child: _list.isEmpty
-                                ? const Center(child: Text("Drop here"))
-                                : Text(_list.join("\n")),
-                          ),
-                        )
                       ],
                     ),
                   ),
