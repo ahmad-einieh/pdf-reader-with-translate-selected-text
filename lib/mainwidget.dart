@@ -190,7 +190,16 @@ class _MainWidgetState extends State<MainWidget> {
                       // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            FilePickerResult? result = await FilePicker.platform
+                                .pickFiles(
+                                    dialogTitle: "open PDF files",
+                                    allowedExtensions: ['pdf'],
+                                    type: FileType.custom,
+                                    allowMultiple: true,
+                                    lockParentWindow: true);
+                            print(result!.files.single.path);
+                          },
                           child: DropTarget(
                             onDragDone: (detail) {
                               setState(() {
