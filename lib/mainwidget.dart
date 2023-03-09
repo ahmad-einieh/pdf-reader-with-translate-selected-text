@@ -291,7 +291,7 @@ class _MainWidgetState extends State<MainWidget> {
                             isSingle = !isSingle;
                           });
                         },
-                        icon: const Icon(Icons.change_circle))
+                        icon: const Icon(Icons.change_circle)),
                   ],
                 ),
               ),
