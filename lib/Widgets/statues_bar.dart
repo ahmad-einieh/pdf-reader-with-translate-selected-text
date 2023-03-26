@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../controllers/pdf_ctr.dart';
 
 class StatuesBar extends StatelessWidget {
-  const StatuesBar({
-    super.key,
-    required this.pdfValue,
-  });
+  const StatuesBar({super.key, required this.pdfValue});
   final PDFctr pdfValue;
 
   @override
@@ -31,12 +27,36 @@ class StatuesBar extends StatelessWidget {
                     },
                     icon: const Icon(Icons.close))
                 : const SizedBox(),
-            pdfValue.currentPage == null || pdfValue.pageCount == null
-                ? const SizedBox()
-                : Text(
-                    "${pdfValue.currentPage} of ${pdfValue.pageCount}",
-                    style: const TextStyle(fontSize: 24),
-                  ),
+            Row(
+              children: [
+                IconButton(
+                    padding: EdgeInsets.zero,
+                    tooltip: "go to pervious page",
+                    onPressed: () {
+                      pdfValue.pdfViewerController.previousPage();
+                    },
+                    icon: const Icon(
+                      Icons.chevron_left,
+                      size: 33,
+                    )),
+                pdfValue.currentPage == null || pdfValue.pageCount == null
+                    ? const SizedBox()
+                    : Text(
+                        "${pdfValue.currentPage} of ${pdfValue.pageCount}",
+                        style: const TextStyle(fontSize: 24),
+                      ),
+                IconButton(
+                    padding: EdgeInsets.zero,
+                    tooltip: "go to next page",
+                    onPressed: () {
+                      pdfValue.pdfViewerController.nextPage();
+                    },
+                    icon: const Icon(
+                      Icons.chevron_right,
+                      size: 33,
+                    )),
+              ],
+            ),
             pdfValue.filesList.isEmpty
                 ? const SizedBox()
                 : Text(
@@ -47,6 +67,7 @@ class StatuesBar extends StatelessWidget {
               children: [
                 IconButton(
                     padding: EdgeInsets.zero,
+                    tooltip: "go to previous file",
                     onPressed: () async {
                       await pdfValue.goPreviousFile();
                     },
@@ -57,9 +78,12 @@ class StatuesBar extends StatelessWidget {
                 pdfValue.filesList.isEmpty
                     ? const SizedBox()
                     : Text(
-                        "${pdfValue.currentFileIndex + 1} of ${pdfValue.filesList.length}"),
+                        "${pdfValue.currentFileIndex + 1} of ${pdfValue.filesList.length}",
+                        style: const TextStyle(fontSize: 24),
+                      ),
                 IconButton(
                     padding: EdgeInsets.zero,
+                    tooltip: "go to next file",
                     onPressed: () async {
                       await pdfValue.goNextFile();
                     },

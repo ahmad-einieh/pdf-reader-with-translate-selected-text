@@ -73,9 +73,7 @@ class MainWidget extends StatelessWidget {
                             ),
                           )),
                     )
-                  : PDFViewer(
-                      pdfValue: pdfValue,
-                    ),
+                  : PDFViewer(pdfValue: pdfValue),
               StatuesBar(pdfValue: pdfValue)
             ],
           ),

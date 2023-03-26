@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import './views/mainwidget.dart';
 
-void main() {
-  runApp(const MainApp());
-}
+void main() => runApp(const MainApp());
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});

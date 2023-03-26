@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 import 'package:translator/translator.dart';
 
 import '../controllers/pdf_ctr.dart';
-import '../controllers/voice_to_text_ctr.dart';
+import '../helper/tts_method.dart';
 
 class CustomWidget extends StatelessWidget {
   const CustomWidget({
@@ -46,16 +45,13 @@ class CustomWidget extends StatelessWidget {
               pdfValue.orginalText == null ? "" : pdfValue.orginalText!.trim(),
             ),
           ),
-          GetBuilder<TTSctr>(
-            init: TTSctr(),
-            builder: (ttsValue) => IconButton(
-                onPressed: () async {
-                  try {
-                    await ttsValue.readText(pdfValue.orginalText);
-                  } catch (_) {}
-                },
-                icon: const Icon(Icons.volume_up)),
-          ),
+          IconButton(
+              onPressed: () async {
+                try {
+                  await readText(pdfValue.orginalText);
+                } catch (_) {}
+              },
+              icon: const Icon(Icons.volume_up)),
         ],
       ),
     );

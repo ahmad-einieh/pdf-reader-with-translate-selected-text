@@ -13,7 +13,8 @@ class PDFViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Expanded(
         child: SfPdfViewer.file(
-          File(pdfValue.filesList![pdfValue.currentFileIndex].path),
+          File(pdfValue.filesList[pdfValue.currentFileIndex].path),
+          controller: pdfValue.pdfViewerController,
           pageLayoutMode: pdfValue.isSingle
               ? PdfPageLayoutMode.single
               : PdfPageLayoutMode.continuous,
@@ -29,14 +30,11 @@ class PDFViewer extends StatelessWidget {
                 await pdfValue.updateOrginalText(details.selectedText!
                     .replaceAll(RegExp(r'\n'), ' ')
                     .trim());
-
                 final translator = GoogleTranslator();
                 var t = await translator.translate(pdfValue.orginalText!,
                     from: 'en', to: 'ar');
-
                 await pdfValue
                     .updateText(t.text.replaceAll(RegExp(r'\n'), ' ').trim());
-
                 final gt = SimplyTranslator(EngineType.google);
                 String textResult =
                     await gt.trSimply(pdfValue.orginalText!, "en", 'ar');

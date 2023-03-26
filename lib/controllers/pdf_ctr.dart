@@ -1,5 +1,6 @@
 import 'package:cross_file/cross_file.dart';
 import 'package:get/get.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class PDFctr extends GetxController {
   int? pageCount;
@@ -17,6 +18,14 @@ class PDFctr extends GetxController {
   int currentFileIndex = 0;
 
   bool dragging = false;
+
+  late final PdfViewerController pdfViewerController;
+
+  @override
+  void onInit() {
+    super.onInit();
+    pdfViewerController = PdfViewerController();
+  }
 
   updateDragging(bool dragging) {
     this.dragging = dragging;
