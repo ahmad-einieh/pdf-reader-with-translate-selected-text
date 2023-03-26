@@ -7,27 +7,26 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:translator/translator.dart';
 
 class PDFViewer extends StatelessWidget {
-  PDFViewer({super.key, required this.file, required this.pdfValue});
-  File file;
-  PDFctr pdfValue;
+  const PDFViewer({super.key, required this.pdfValue});
+  final PDFctr pdfValue;
 
   @override
   Widget build(BuildContext context) => Expanded(
         child: SfPdfViewer.file(
-          file,
+          File(pdfValue.filesList![pdfValue.currentFileIndex].path),
           pageLayoutMode: pdfValue.isSingle
               ? PdfPageLayoutMode.single
               : PdfPageLayoutMode.continuous,
-          onDocumentLoaded: (details) {
-            pdfValue.updatePageCount(details.document.pages.count);
+          onDocumentLoaded: (details) async {
+            await pdfValue.updatePageCount(details.document.pages.count);
           },
-          onPageChanged: (details) {
-            pdfValue.updateCurrentPage(details.newPageNumber);
+          onPageChanged: (details) async {
+            await pdfValue.updateCurrentPage(details.newPageNumber);
           },
           onTextSelectionChanged: (details) async {
             if (details.selectedText != null) {
               try {
-                pdfValue.updateOrginalText(details.selectedText!
+                await pdfValue.updateOrginalText(details.selectedText!
                     .replaceAll(RegExp(r'\n'), ' ')
                     .trim());
 
@@ -35,13 +34,13 @@ class PDFViewer extends StatelessWidget {
                 var t = await translator.translate(pdfValue.orginalText!,
                     from: 'en', to: 'ar');
 
-                pdfValue
+                await pdfValue
                     .updateText(t.text.replaceAll(RegExp(r'\n'), ' ').trim());
 
                 final gt = SimplyTranslator(EngineType.google);
                 String textResult =
                     await gt.trSimply(pdfValue.orginalText!, "en", 'ar');
-                pdfValue.updateOtherText(
+                await pdfValue.updateOtherText(
                     textResult.replaceAll(RegExp(r'\n'), ' ').trim());
               } catch (_) {}
             }

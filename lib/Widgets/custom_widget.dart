@@ -7,12 +7,12 @@ import '../controllers/pdf_ctr.dart';
 import '../controllers/voice_to_text_ctr.dart';
 
 class CustomWidget extends StatelessWidget {
-  CustomWidget({
+  const CustomWidget({
     super.key,
     required this.pdfValue,
   });
 
-  PDFctr pdfValue;
+  final PDFctr pdfValue;
 
   @override
   Widget build(BuildContext context) {

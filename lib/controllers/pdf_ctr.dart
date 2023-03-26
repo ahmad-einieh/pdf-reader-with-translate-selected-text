@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:cross_file/cross_file.dart';
 import 'package:get/get.dart';
 
 class PDFctr extends GetxController {
@@ -10,11 +9,19 @@ class PDFctr extends GetxController {
   String? text;
   String? otherText;
 
-  File? file;
-  String? fileName;
+  List<XFile> filesList = [];
 
   bool isShow = true;
   bool isSingle = true;
+
+  int currentFileIndex = 0;
+
+  bool dragging = false;
+
+  updateDragging(bool dragging) {
+    this.dragging = dragging;
+    update();
+  }
 
   updateIsShow() {
     isShow = !isShow;
@@ -26,9 +33,8 @@ class PDFctr extends GetxController {
     update();
   }
 
-  updateFile(String filePath, String fileName) {
-    file = File(filePath);
-    fileName = fileName;
+  updateFileList(List<XFile> files) {
+    filesList = files;
     update();
   }
 
@@ -58,15 +64,33 @@ class PDFctr extends GetxController {
   }
 
   closeFile() {
-    isShow = true;
-    file = null;
-    fileName = null;
+    filesList.removeAt(currentFileIndex);
+    currentFileIndex = 0;
+    if (filesList.isEmpty) {
+      isShow = true;
+      pageCount = null;
+      currentPage = null;
+      dragging = false;
+    }
     text = null;
     orginalText = null;
     otherText = null;
-    pageCount = null;
-    currentPage = null;
-    isSingle = true;
     update();
+  }
+
+  goNextFile() {
+    if (currentFileIndex < filesList.length - 1) {
+      currentFileIndex++;
+      currentPage = 1;
+      update();
+    }
+  }
+
+  goPreviousFile() {
+    if (currentFileIndex > 0) {
+      currentFileIndex--;
+      currentPage = 1;
+      update();
+    }
   }
 }
