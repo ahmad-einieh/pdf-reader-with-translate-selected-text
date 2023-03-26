@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:simplytranslate/simplytranslate.dart';
 import 'package:translator/translator.dart';
 
-import '../controllers/pdf_ctr.dart';
-import '../helper/tts_method.dart';
+import '../../controllers/pdf_ctr.dart';
+import '../../helper/tts_method.dart';
 
 class CustomWidget extends StatelessWidget {
   const CustomWidget({

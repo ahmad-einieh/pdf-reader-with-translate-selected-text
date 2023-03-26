@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../controllers/pdf_ctr.dart';
+import '../../controllers/pdf_ctr.dart';
 
 class StatuesBar extends StatelessWidget {
   const StatuesBar({super.key, required this.pdfValue});
@@ -22,19 +22,49 @@ class StatuesBar extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     tooltip:
                         "close ${pdfValue.filesList[pdfValue.currentFileIndex].name}",
-                    onPressed: () async {
-                      await pdfValue.closeFile();
-                    },
+                    onPressed: () async => await pdfValue.closeFile(),
                     icon: const Icon(Icons.close))
                 : const SizedBox(),
+            Row(
+              children: [
+                Visibility(
+                  visible: pdfValue.searchResult.hasResult,
+                  child: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () => pdfValue.clearReslut(),
+                  ),
+                ),
+                Visibility(
+                  visible: pdfValue.searchResult.hasResult,
+                  child: IconButton(
+                    icon: const Icon(Icons.keyboard_arrow_up),
+                    onPressed: () => pdfValue.searchResult.previousInstance(),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.1,
+                  height: 18,
+                  child: TextField(
+                    onSubmitted: (value) => pdfValue.searchResult =
+                        pdfValue.pdfViewerController.searchText(value),
+                  ),
+                ),
+                Visibility(
+                  visible: pdfValue.searchResult.hasResult,
+                  child: IconButton(
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    onPressed: () => pdfValue.searchResult.nextInstance(),
+                  ),
+                ),
+              ],
+            ),
             Row(
               children: [
                 IconButton(
                     padding: EdgeInsets.zero,
                     tooltip: "go to pervious page",
-                    onPressed: () {
-                      pdfValue.pdfViewerController.previousPage();
-                    },
+                    onPressed: () =>
+                        pdfValue.pdfViewerController.previousPage(),
                     icon: const Icon(
                       Icons.chevron_left,
                       size: 33,
@@ -48,9 +78,7 @@ class StatuesBar extends StatelessWidget {
                 IconButton(
                     padding: EdgeInsets.zero,
                     tooltip: "go to next page",
-                    onPressed: () {
-                      pdfValue.pdfViewerController.nextPage();
-                    },
+                    onPressed: () => pdfValue.pdfViewerController.nextPage(),
                     icon: const Icon(
                       Icons.chevron_right,
                       size: 33,
@@ -68,9 +96,7 @@ class StatuesBar extends StatelessWidget {
                 IconButton(
                     padding: EdgeInsets.zero,
                     tooltip: "go to previous file",
-                    onPressed: () async {
-                      await pdfValue.goPreviousFile();
-                    },
+                    onPressed: () async => await pdfValue.goPreviousFile(),
                     icon: const Icon(
                       Icons.arrow_left,
                       size: 33,
@@ -84,9 +110,7 @@ class StatuesBar extends StatelessWidget {
                 IconButton(
                     padding: EdgeInsets.zero,
                     tooltip: "go to next file",
-                    onPressed: () async {
-                      await pdfValue.goNextFile();
-                    },
+                    onPressed: () async => await pdfValue.goNextFile(),
                     icon: const Icon(
                       Icons.arrow_right,
                       size: 33,
@@ -95,9 +119,7 @@ class StatuesBar extends StatelessWidget {
             ),
             IconButton(
                 padding: EdgeInsets.zero,
-                onPressed: () async {
-                  await pdfValue.updateIsSingle();
-                },
+                onPressed: () async => await pdfValue.updateIsSingle(),
                 icon: const Icon(Icons.change_circle)),
           ],
         ),

@@ -6,9 +6,9 @@ import 'package:pdf_translator/controllers/pdf_ctr.dart';
 import 'package:pdf_translator/views/pdf_viewer.dart';
 import 'package:file_picker/file_picker.dart';
 
-import '../Widgets/custom_selectable_text.dart';
-import '../Widgets/custom_widget.dart';
-import '../Widgets/statues_bar.dart';
+import 'Widgets/custom_selectable_text.dart';
+import 'Widgets/custom_widget.dart';
+import 'Widgets/statues_bar.dart';
 
 class MainWidget extends StatelessWidget {
   const MainWidget({super.key});
@@ -16,10 +16,10 @@ class MainWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GetBuilder<PDFctr>(
-        init: PDFctr(),
-        builder: (pdfValue) => Center(
-          child: Column(
+      body: Center(
+        child: GetBuilder<PDFctr>(
+          init: PDFctr(),
+          builder: (pdfValue) => Column(
             children: [
               CustomWidget(pdfValue: pdfValue),
               CustomSelectableText(
@@ -50,7 +50,6 @@ class MainWidget extends StatelessWidget {
                           child: DropTarget(
                             onDragDone: (detail) async {
                               await pdfValue.updateFileList(detail.files);
-
                               await pdfValue.updateIsShow();
                             },
                             onDragEntered: (detail) {

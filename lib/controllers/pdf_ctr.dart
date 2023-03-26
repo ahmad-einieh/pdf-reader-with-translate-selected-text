@@ -20,11 +20,13 @@ class PDFctr extends GetxController {
   bool dragging = false;
 
   late final PdfViewerController pdfViewerController;
+  late final PdfTextSearchResult searchResult;
 
   @override
   void onInit() {
     super.onInit();
     pdfViewerController = PdfViewerController();
+    searchResult = PdfTextSearchResult();
   }
 
   updateDragging(bool dragging) {
@@ -101,5 +103,10 @@ class PDFctr extends GetxController {
       currentPage = 1;
       update();
     }
+  }
+
+  clearReslut() {
+    searchResult.clear();
+    update();
   }
 }
