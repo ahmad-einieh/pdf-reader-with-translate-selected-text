@@ -94,12 +94,20 @@ class PDFctr extends GetxController {
       currentFileIndex++;
       currentPage = 1;
       update();
+    } else {
+      currentFileIndex = 0;
+      currentPage = 1;
+      update();
     }
   }
 
   goPreviousFile() {
     if (currentFileIndex > 0) {
       currentFileIndex--;
+      currentPage = 1;
+      update();
+    } else {
+      currentFileIndex = filesList.length - 1;
       currentPage = 1;
       update();
     }
