@@ -35,6 +35,10 @@ class CustomWidget extends StatelessWidget {
                   String textResult = await gt.trSimply(value, "en", 'ar');
                   pdfValue.updateOtherText(
                       textResult.replaceAll(RegExp(r'\n'), ' ').trim());
+                } else {
+                  pdfValue.updateOrginalText("");
+                  pdfValue.updateText("");
+                  pdfValue.updateOtherText("");
                 }
               },
             ),
