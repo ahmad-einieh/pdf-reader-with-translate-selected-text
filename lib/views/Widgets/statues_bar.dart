@@ -19,37 +19,37 @@ class StatuesBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                !pdfValue.isShow
-                    ? IconButton(
-                        padding: EdgeInsets.zero,
-                        tooltip:
-                            "close ${pdfValue.filesList[pdfValue.currentFileIndex].name}",
-                        onPressed: () async => await pdfValue.closeFile(),
-                        icon: const Icon(Icons.close))
-                    : const SizedBox(),
-                IconButton(
-                    padding: EdgeInsets.zero,
-                    tooltip: "add files",
-                    onPressed: () async {
-                      FilePickerResult? result = await FilePicker.platform
-                          .pickFiles(
-                              dialogTitle: "open PDF files",
-                              allowedExtensions: ['pdf'],
-                              type: FileType.custom,
-                              allowMultiple: true,
-                              lockParentWindow: true);
-                      if (result != null) {
-                        List<XFile> xFilesFromOut = result.files
-                            .map((file) => XFile(file.path!))
-                            .toList();
-                        pdfValue.addFiles(xFilesFromOut);
-                      }
-                    },
-                    icon: const Icon(Icons.add)),
-              ],
-            ),
+            !pdfValue.isShow
+                ? Row(
+                    children: [
+                      IconButton(
+                          padding: EdgeInsets.zero,
+                          tooltip:
+                              "close ${pdfValue.filesList[pdfValue.currentFileIndex].name}",
+                          onPressed: () async => await pdfValue.closeFile(),
+                          icon: const Icon(Icons.close)),
+                      IconButton(
+                          padding: EdgeInsets.zero,
+                          tooltip: "add files",
+                          onPressed: () async {
+                            FilePickerResult? result = await FilePicker.platform
+                                .pickFiles(
+                                    dialogTitle: "open PDF files",
+                                    allowedExtensions: ['pdf'],
+                                    type: FileType.custom,
+                                    allowMultiple: true,
+                                    lockParentWindow: true);
+                            if (result != null) {
+                              List<XFile> xFilesFromOut = result.files
+                                  .map((file) => XFile(file.path!))
+                                  .toList();
+                              pdfValue.addFiles(xFilesFromOut);
+                            }
+                          },
+                          icon: const Icon(Icons.add)),
+                    ],
+                  )
+                : const SizedBox(),
             Row(
               children: [
                 Visibility(
