@@ -1,3 +1,5 @@
+import 'package:cross_file/cross_file.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import '../../controllers/pdf_ctr.dart';
 
@@ -17,14 +19,37 @@ class StatuesBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            !pdfValue.isShow
-                ? IconButton(
+            Row(
+              children: [
+                !pdfValue.isShow
+                    ? IconButton(
+                        padding: EdgeInsets.zero,
+                        tooltip:
+                            "close ${pdfValue.filesList[pdfValue.currentFileIndex].name}",
+                        onPressed: () async => await pdfValue.closeFile(),
+                        icon: const Icon(Icons.close))
+                    : const SizedBox(),
+                IconButton(
                     padding: EdgeInsets.zero,
-                    tooltip:
-                        "close ${pdfValue.filesList[pdfValue.currentFileIndex].name}",
-                    onPressed: () async => await pdfValue.closeFile(),
-                    icon: const Icon(Icons.close))
-                : const SizedBox(),
+                    tooltip: "add files",
+                    onPressed: () async {
+                      FilePickerResult? result = await FilePicker.platform
+                          .pickFiles(
+                              dialogTitle: "open PDF files",
+                              allowedExtensions: ['pdf'],
+                              type: FileType.custom,
+                              allowMultiple: true,
+                              lockParentWindow: true);
+                      if (result != null) {
+                        List<XFile> xFilesFromOut = result.files
+                            .map((file) => XFile(file.path!))
+                            .toList();
+                        pdfValue.addFiles(xFilesFromOut);
+                      }
+                    },
+                    icon: const Icon(Icons.add)),
+              ],
+            ),
             Row(
               children: [
                 Visibility(

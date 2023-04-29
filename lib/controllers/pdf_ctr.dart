@@ -82,6 +82,8 @@ class PDFctr extends GetxController {
       pageCount = null;
       currentPage = null;
       dragging = false;
+    } else {
+      currentPage = 1;
     }
     text = null;
     orginalText = null;
@@ -116,5 +118,12 @@ class PDFctr extends GetxController {
   clearReslut() {
     searchResult.clear();
     update();
+  }
+
+  addFiles(List<XFile> newFiles) {
+    if (newFiles.isNotEmpty) {
+      filesList.addAll(newFiles);
+      update();
+    }
   }
 }
