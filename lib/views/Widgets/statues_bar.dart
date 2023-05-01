@@ -113,6 +113,7 @@ class StatuesBar extends StatelessWidget {
             pdfValue.filesList.isEmpty
                 ? const SizedBox()
                 : Text(
+                    //! edit to show all file
                     pdfValue.filesList[pdfValue.currentFileIndex].name,
                     style: const TextStyle(fontSize: 16),
                   ),

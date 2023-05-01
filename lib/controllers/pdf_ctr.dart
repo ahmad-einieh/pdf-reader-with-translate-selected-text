@@ -123,6 +123,7 @@ class PDFctr extends GetxController {
   addFiles(List<XFile> newFiles) {
     if (newFiles.isNotEmpty) {
       filesList.addAll(newFiles);
+      currentFileIndex = filesList.length - 1;
       update();
     }
   }
