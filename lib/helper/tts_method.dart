@@ -13,10 +13,10 @@ readText(text) async {
     "f": "16khz_16bit_stereo"
   };
   final uri = Uri.parse(
-      'https://voicerss-text-to-speech.p.rapidapi.com/?key=63cb6bc6ae5148339cf6858442f5bed5');
+      'https://voicerss-text-to-speech.p.rapidapi.com/?key=CONFIGURE_GENERIC_API_KEY');
   final headers = {
     'content-type': 'application/x-www-form-urlencoded',
-    'X-RapidAPI-Key': 'e115eb8e19msh1807594767d84d6p199db8jsn7fd5aa515e87',
+    'X-RapidAPI-Key': 'CONFIGURE_RAPIDAPI_ACCESS_TOKEN',
     'X-RapidAPI-Host': 'voicerss-text-to-speech.p.rapidapi.com'
   };
   final request = http.Request('POST', uri)..headers.addAll(headers);
